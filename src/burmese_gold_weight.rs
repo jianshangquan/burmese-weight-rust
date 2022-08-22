@@ -5,6 +5,7 @@ use bigdecimal::{BigDecimal, FromPrimitive, ToPrimitive};
 
 
 
+
 struct BurmeseGoldWeight{
     patetha: BigDecimal,
     kyat: BigDecimal,
@@ -16,11 +17,36 @@ struct BurmeseGoldWeight{
 
 impl BurmeseGoldWeight{
 
-    const ONE_PATETHA_IN_KYAT: BigDecimal = BigDecimal::from_str("100").unwrap();
-    const ONE_KYAT_IN_PAE: BigDecimal = BigDecimal::from_str("16").unwrap();
-    const ONE_PAE_IN_YWAY: BigDecimal = BigDecimal::from_str("8").unwrap();
-    const ONE_KYAT_IN_GRAM: BigDecimal = BigDecimal::from_str("16.66666666").unwrap();
-    const ONE_PAE_IN_GRAM: BigDecimal = BurmeseGoldWeight::ONE_KYAT_IN_GRAM.div(BurmeseGoldWeight::ONE_KYAT_IN_PAE);
+    // let ONE_PATETHA_IN_KYAT: BigDecimal = BigDecimal::from_str("100").unwrap();
+    // let ONE_KYAT_IN_PAE: BigDecimal = BigDecimal::from_str("16").unwrap();
+    // let ONE_PAE_IN_YWAY: BigDecimal = BigDecimal::from_str("8").unwrap();
+    // let ONE_KYAT_IN_GRAM: BigDecimal = BigDecimal::from_str("16.66666666").unwrap();
+    // let ONE_PAE_IN_GRAM: BigDecimal = BurmeseGoldWeight::ONE_KYAT_IN_GRAM.div(BurmeseGoldWeight::ONE_KYAT_IN_PAE);
+
+
+    // static
+    fn ONE_PATETHA_IN_KYAT() -> BigDecimal{
+        BigDecimal::from_str("100").unwrap()
+    }
+
+    fn ONE_KYAT_IN_PAE() -> BigDecimal{
+        BigDecimal::from_str("16").unwrap()
+    }
+
+    fn ONE_PAE_IN_YWAY() -> BigDecimal{
+        BigDecimal::from_str("8").unwrap()
+    }
+
+    fn ONE_KYAT_IN_GRAM() -> BigDecimal{
+        BigDecimal::from_str("16.66666666").unwrap()
+    }
+
+    fn ONE_PAE_IN_GRAM() -> BigDecimal{
+        // BurmeseGoldWeight::ONE_KYAT_IN_GRAM().div(BurmeseGoldWeight::ONE_KYAT_IN_PAE)
+        BurmeseGoldWeight::ONE_KYAT_IN_GRAM().div(BurmeseGoldWeight::ONE_KYAT_IN_PAE())
+    }
+
+
 
     pub fn new(){
         
@@ -72,20 +98,20 @@ impl BurmeseGoldWeight{
     }
 
     pub fn toPatetha(&self) -> BigDecimal{
-        return self.toKyat().div(BurmeseGoldWeight::ONE_PATETHA_IN_KYAT);
+        return self.toKyat().div(BurmeseGoldWeight::ONE_PATETHA_IN_KYAT());
     }
 
     pub fn toKyat(&self) -> BigDecimal{
-        return self.toPae().div(BurmeseGoldWeight::ONE_KYAT_IN_PAE);
+        return self.toPae().div(BurmeseGoldWeight::ONE_KYAT_IN_PAE());
     }
 
     pub fn toPae(&self) -> BigDecimal{
-        let result: BigDecimal = self.patetha.mul(BurmeseGoldWeight::ONE_PATETHA_IN_KYAT).mul(BurmeseGoldWeight::ONE_KYAT_IN_PAE).add(self.kyat.mul(BurmeseGoldWeight::ONE_KYAT_IN_PAE)).add(&self.pae).add(self.yway.div(BurmeseGoldWeight::ONE_PAE_IN_YWAY));
+        let result: BigDecimal = (&self.patetha).mul(BurmeseGoldWeight::ONE_PATETHA_IN_KYAT()).mul(BurmeseGoldWeight::ONE_KYAT_IN_PAE()).add((&self.kyat).mul(BurmeseGoldWeight::ONE_KYAT_IN_PAE())).add(&self.pae).add((&self.yway).div(BurmeseGoldWeight::ONE_PAE_IN_YWAY()));
         return result;
     }
 
     pub fn toYway(&self) -> BigDecimal{
-        return self.toPae().mul(BurmeseGoldWeight::ONE_PAE_IN_YWAY);
+        return self.toPae().mul(BurmeseGoldWeight::ONE_PAE_IN_YWAY());
     }
 
 
@@ -97,16 +123,19 @@ impl BurmeseGoldWeight{
 
         let modulo: BigDecimal = BigDecimal::from_str("1").unwrap();
 
-        pa = kyat.div(BurmeseGoldWeight::ONE_PATETHA_IN_KYAT);
-        pa = pa.sub(pa.rem(&modulo));
+        pa = kyat.div(BurmeseGoldWeight::ONE_PATETHA_IN_KYAT());
+        let cpa = pa.clone();
+        pa = pa.sub(cpa.rem(&modulo));
 
         k = kyat.sub(&pa);
-        k = k.sub(k.rem(&modulo));
+        let ck = k.clone();
+        k = k.sub(ck.rem(&modulo));
 
-        p = kyat.sub(pa.mul(BurmeseGoldWeight::ONE_PATETHA_IN_KYAT)).sub(&k).div(BurmeseGoldWeight::ONE_KYAT_IN_PAE);
-        p = p.sub(p.rem(modulo));
+        p = kyat.sub(pa.clone().mul(BurmeseGoldWeight::ONE_PATETHA_IN_KYAT())).sub(&k).div(BurmeseGoldWeight::ONE_KYAT_IN_PAE());
+        let cp = p.clone();
+        p = p.sub(cp.rem(&modulo));
 
-        y = kyat.sub(pa.mul(BurmeseGoldWeight::ONE_PATETHA_IN_KYAT)).sub(&k).sub(p.div(BurmeseGoldWeight::ONE_KYAT_IN_PAE));
+        y = kyat.sub(pa.clone().mul(BurmeseGoldWeight::ONE_PATETHA_IN_KYAT())).sub(&k).sub(p.clone().div(BurmeseGoldWeight::ONE_KYAT_IN_PAE()));
 
         return BurmeseGoldWeight { patetha: pa, kyat: k, pae: p, yway: y };
     }
