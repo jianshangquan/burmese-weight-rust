@@ -1,3 +1,5 @@
+mod burmese_gold_weight;
+
 #[cfg(test)]
 mod tests {
     #[test]
