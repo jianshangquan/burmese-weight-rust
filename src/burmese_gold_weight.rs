@@ -51,24 +51,24 @@ impl BurmeseGoldWeight{
     pub fn byBurmeseGoldQuality(&self, quality: u8) -> BurmeseGoldWeight{
         let ratio: BigDecimal = BigDecimal::from_u8(quality).unwrap().div(BigDecimal::from_u8(16).unwrap());
         let purifiedK: BigDecimal = self.toKyat().mul(ratio);
-        return self.fromKyatToBurmeseGoldWeight(purifiedK);
+        return self.fromKyatToBurmeseGoldWeight(&purifiedK);
     }
 
     pub fn byInternationalGoldQuality(&self, quality: u8) -> BurmeseGoldWeight{
         let ratio: BigDecimal = BigDecimal::from_u8(quality).unwrap().div(BigDecimal::from_u8(24).unwrap()).mul(BigDecimal::from_u8(16).unwrap());
         let purifiedK: BigDecimal = self.toKyat().mul(ratio);
-        return self.fromKyatToBurmeseGoldWeight(purifiedK);
+        return self.fromKyatToBurmeseGoldWeight(&purifiedK);
     }
 
 
     pub fn add(&self, weight: BurmeseGoldWeight) -> BurmeseGoldWeight{
         let k: BigDecimal = weight.toKyat().add(self.toKyat());
-        return self.fromKyatToBurmeseGoldWeight(k); 
+        return self.fromKyatToBurmeseGoldWeight(&k);
     }
 
     pub fn substract(&self, weight: BurmeseGoldWeight) -> BurmeseGoldWeight{
         let k: BigDecimal = weight.toKyat().sub(self.toKyat());
-        return self.fromKyatToBurmeseGoldWeight(k);
+        return self.fromKyatToBurmeseGoldWeight(&k);
     }
 
     pub fn toPatetha(&self) -> BigDecimal{
@@ -80,7 +80,7 @@ impl BurmeseGoldWeight{
     }
 
     pub fn toPae(&self) -> BigDecimal{
-        let result: BigDecimal = self.patetha.mul(BurmeseGoldWeight::ONE_PATETHA_IN_KYAT).mul(BurmeseGoldWeight::ONE_KYAT_IN_PAE).add(self.kyat.mul(BurmeseGoldWeight::ONE_KYAT_IN_PAE)).add(self.pae).add(self.yway.div(BurmeseGoldWeight::ONE_PAE_IN_YWAY));
+        let result: BigDecimal = self.patetha.mul(BurmeseGoldWeight::ONE_PATETHA_IN_KYAT).mul(BurmeseGoldWeight::ONE_KYAT_IN_PAE).add(self.kyat.mul(BurmeseGoldWeight::ONE_KYAT_IN_PAE)).add(&self.pae).add(self.yway.div(BurmeseGoldWeight::ONE_PAE_IN_YWAY));
         return result;
     }
 
@@ -89,31 +89,31 @@ impl BurmeseGoldWeight{
     }
 
 
-    fn fromKyatToBurmeseGoldWeight(&self, kyat: BigDecimal) -> BurmeseGoldWeight{
-        let mut pa: &BigDecimal;
-        let mut k: &BigDecimal;
-        let mut p: &BigDecimal;
-        let y: &BigDecimal;
+    fn fromKyatToBurmeseGoldWeight(&self, kyat: &BigDecimal) -> BurmeseGoldWeight{
+        let mut pa: BigDecimal = BigDecimal::default();
+        let mut k: BigDecimal = BigDecimal::default();
+        let mut p: BigDecimal = BigDecimal::default();
+        let mut y: BigDecimal = BigDecimal::default();
 
         let modulo: BigDecimal = BigDecimal::from_str("1").unwrap();
 
-        pa = &kyat.div(BurmeseGoldWeight::ONE_PATETHA_IN_KYAT);
-        pa = &pa.sub(pa.rem(&modulo));
+        pa = kyat.div(BurmeseGoldWeight::ONE_PATETHA_IN_KYAT);
+        pa = pa.sub(pa.rem(&modulo));
 
-        k = &kyat.sub(pa);
-        k = &k.sub(k.rem(&modulo));
+        k = kyat.sub(&pa);
+        k = k.sub(k.rem(&modulo));
 
-        p = &kyat.sub(pa.mul(BurmeseGoldWeight::ONE_PATETHA_IN_KYAT)).sub(k).div(BurmeseGoldWeight::ONE_KYAT_IN_PAE);
-        p = &p.sub(p.rem(modulo));
+        p = kyat.sub(pa.mul(BurmeseGoldWeight::ONE_PATETHA_IN_KYAT)).sub(&k).div(BurmeseGoldWeight::ONE_KYAT_IN_PAE);
+        p = p.sub(p.rem(modulo));
 
-        y = &kyat.sub(pa.mul(BurmeseGoldWeight::ONE_PATETHA_IN_KYAT)).sub(k).sub(p.div(BurmeseGoldWeight::ONE_KYAT_IN_PAE));
+        y = kyat.sub(pa.mul(BurmeseGoldWeight::ONE_PATETHA_IN_KYAT)).sub(&k).sub(p.div(BurmeseGoldWeight::ONE_KYAT_IN_PAE));
 
         return BurmeseGoldWeight { patetha: pa, kyat: k, pae: p, yway: y };
     }
 
     fn from_gram(&self, g: u128) -> BurmeseGoldWeight{
         let k: BigDecimal = BigDecimal::from_u128(g).unwrap();
-        return self.fromKyatToBurmeseGoldWeight(k);
+        return self.fromKyatToBurmeseGoldWeight(&k);
     }
 }
 
