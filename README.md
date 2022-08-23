@@ -51,5 +51,5 @@
 
 ### Ported languages
 Java [burmese-gold-weight-java](https://github.com/jianshangquan/burmese-gold-weight-java) \
-Javascript [burmese-gold-weight-javascript](https://github.com/jianshangquan/burmese-weight-js)
+Javascript [burmese-gold-weight-javascript](https://github.com/jianshangquan/burmese-weight-js) \
 Rust [burmese-gold-weight-rust](https://github.com/jianshangquan/burmese-weight-rust)
