@@ -1,4 +1,4 @@
-# burmese-gold-weight-js
+# burmese-gold-weight-rust
 ### Unit Conversion table
 |From|To|
 |--|--|
