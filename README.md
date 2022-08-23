@@ -12,7 +12,7 @@
 
 #### Notes
 1. BurmeseGoldWeight is immutable
-2. Use BigNumber for calculation due to [Floating point error in computing](https://betterprogramming.pub/why-is-0-1-0-2-not-equal-to-0-3-in-most-programming-languages-99432310d476)
+2. Use BigDecimal for calculation due to [Floating point error in computing](https://betterprogramming.pub/why-is-0-1-0-2-not-equal-to-0-3-in-most-programming-languages-99432310d476)
 
 #### Usage
 ```rust
